@@ -5,12 +5,22 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/dylanpinn/weather/config"
 )
 
 func main() {
-	body, err := getWeatherResponseBody()
+	config := config.GeneralConfig()
+	var targetLocation string
+
+	if len(os.Args) > 1 {
+		targetLocation = os.Args[1]
+	} else {
+		targetLocation = config.City
+	}
+
+	body, err := getWeatherResponseBody(targetLocation)
 
 	if err != nil {
 		panic(err)
@@ -33,11 +43,12 @@ func (w Weather) NormalisedCurrentTemp() float64 {
 	return w.CurrentTemp - 273.15
 }
 
-func getWeatherResponseBody() ([]byte, error) {
+func getWeatherResponseBody(targetLocation string) ([]byte, error) {
 	config := config.GeneralConfig()
+
 	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5/find?appid=%s&q=%s",
 		config.Token,
-		config.City)
+		targetLocation)
 
 	resp, err := http.Get(url)
 	if err != nil {
