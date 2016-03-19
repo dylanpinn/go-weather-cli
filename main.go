@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/dylanpinn/weather/config"
 )
 
 func main() {
@@ -21,7 +23,7 @@ func main() {
 	}
 
 	for i := range openWeather.List {
-		fmt.Printf("\nWeather in %s is %.2f°C",
+		fmt.Printf("\nCurrent weather in %s is %.2f°C",
 			openWeather.List[i].Name,
 			openWeather.List[i].Weather.NormalisedCurrentTemp())
 	}
@@ -32,7 +34,10 @@ func (w Weather) NormalisedCurrentTemp() float64 {
 }
 
 func getWeatherResponseBody() ([]byte, error) {
-	url := "http://api.openweathermap.org/data/2.5/find?appid=0a12b8f2f0dd011ed6085cb995ff61b4&lat=-37.81&lon=144.96&cnt=10"
+	config := config.GeneralConfig()
+	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5/find?appid=%s&q=%s",
+		config.Token,
+		config.City)
 
 	resp, err := http.Get(url)
 	if err != nil {
