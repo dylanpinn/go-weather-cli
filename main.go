@@ -21,7 +21,7 @@ func main() {
 	}
 
 	for i := range openWeather.List {
-		fmt.Printf("\nWeather in %s is %.2f",
+		fmt.Printf("\nWeather in %s is %.2f°C",
 			openWeather.List[i].Name,
 			openWeather.List[i].Weather.NormalisedCurrentTemp())
 	}
