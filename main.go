@@ -33,14 +33,21 @@ func main() {
 	}
 
 	for i := range openWeather.List {
-		fmt.Printf("\nCurrent weather in %s is %.2f°C",
+		fmt.Printf("\nCurrent weather in %s is %.2f°C with a Max of %.2f",
 			openWeather.List[i].Name,
-			openWeather.List[i].Weather.NormalisedCurrentTemp())
+			openWeather.List[i].Weather.NormalisedCurrentTemp(),
+			openWeather.List[i].Weather.NormalisedMaxTemp())
 	}
 }
 
+// NormalisedCurrentTemp converts temp from kelvin to Celcius
 func (w Weather) NormalisedCurrentTemp() float64 {
 	return w.CurrentTemp - 273.15
+}
+
+// NormalisedMaxTemp converts temp from kelvin to Celcius
+func (w Weather) NormalisedMaxTemp() float64 {
+	return w.MaxTemp - 273.15
 }
 
 func getWeatherResponseBody(targetLocation string) ([]byte, error) {
@@ -66,15 +73,18 @@ func getWeatherResponseBody(targetLocation string) ([]byte, error) {
 	return body, nil
 }
 
+// OpenWeather contains List of Cities
 type OpenWeather struct {
 	List []City `json:"list"`
 }
 
+// City contains Weather and name
 type City struct {
 	Weather Weather `json:"main"`
 	Name    string  `json:"name"`
 }
 
+// Weather contains CurrentTemp and MaxTemp
 type Weather struct {
 	CurrentTemp float64 `json:"temp"`
 	MaxTemp     float64 `json:"temp_max"`
